@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../Firebase/firebaseconfig";
 import { Link, useNavigate } from "react-router-dom";
+import { setDoc } from "firebase/firestore";
+import { user } from "../Firebase/firebaseconfig";
 
 const SignUp = () => {
   const data = {
@@ -25,8 +27,14 @@ const SignUp = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { email, motdepasse } = loginData;
+    const { email, motdepasse,pseudo } = loginData;
     createUserWithEmailAndPassword(auth, email, motdepasse)
+      .then((authUser) => {
+        return setDoc(user(authUser.user.uid),{
+          pseudo,
+          email
+        });
+      })
       .then((user) => {
         setloginData({ ...data });
         navigate("/welcome");
@@ -40,6 +48,7 @@ const SignUp = () => {
 
   const btn =
     pseudo === "" ||
+    pseudo.indexOf('@') > -1 ||
     email === "" ||
     motdepasse === "" ||
     motdepasse !== confirmmotdepasse ? (
