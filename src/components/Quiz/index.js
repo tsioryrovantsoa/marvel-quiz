@@ -106,10 +106,26 @@ class Quiz extends Component {
     }
   };
 
+  getpourcentagereussite = (maxquestion, score) => (score / maxquestion) * 100;
+
   gameOver = () => {
-    this.setState({
-      quizEnd: true,
-    });
+    const reussite = this.getpourcentagereussite(
+      this.state.maxQuestion,
+      this.state.score
+    );
+
+    if (reussite >= 50) {
+      this.setState({
+        quizLevel: this.state.quizLevel + 1,
+        percent: reussite,
+        quizEnd: true,
+      });
+    } else {
+      this.setState({
+        percent: reussite,
+        quizEnd: true,
+      });
+    }
   };
 
   render() {
@@ -128,8 +144,15 @@ class Quiz extends Component {
     });
     const { pseudo } = this.props.userData;
 
-    return !this.state.quizEnd ? (
-      <QuizOver ref={this.storedDataRef}/>
+    return this.state.quizEnd ? (
+      <QuizOver
+        ref={this.storedDataRef}
+        levelNames={this.state.levelNames}
+        score={this.state.score}
+        maxquestion={this.state.maxQuestion}
+        quizLevel={this.state.quizLevel}
+        percent={this.state.percent}
+      />
     ) : (
       <>
         <h2>Salut {pseudo}</h2>
