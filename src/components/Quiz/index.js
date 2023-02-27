@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { ToastContainer,toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { QuizMarvel } from "../quizMarvel";
 import Levels from "../Levels";
 import ProgressBar from "../ProgressBar";
+import QuizOver from "../QuizOver";
 
 class Quiz extends Component {
   state = {
@@ -17,7 +18,8 @@ class Quiz extends Component {
     btnDisabled: true,
     userAnswer: null,
     score: 0,
-    showwelcomemsg : false
+    showwelcomemsg: false,
+    quizEnd: false,
   };
 
   storedDataRef = React.createRef();
@@ -37,11 +39,10 @@ class Quiz extends Component {
   };
 
   showWelcomeMsg = (pseudo) => {
-    if(!this.state.showwelcomemsg){
-
+    if (!this.state.showwelcomemsg) {
       this.setState({
-        showwelcomemsg : true
-      })
+        showwelcomemsg: true,
+      });
 
       toast(`Welcome ${pseudo} !`);
     }
@@ -85,6 +86,7 @@ class Quiz extends Component {
   nextQuestion = () => {
     if (this.state.idquestion === this.state.maxQuestion - 1) {
       //Quiz terminer
+      this.gameOver();
     } else {
       //
       this.setState((prevState) => ({
@@ -97,14 +99,17 @@ class Quiz extends Component {
     if (reponse === this.state.userAnswer) {
       this.setState((prevState) => ({
         score: prevState.score + 1,
-      })
-      
-      );
-      toast.success('Bravo!');
-
-    }else{
-      toast.error('Mauvaise reponse!')
+      }));
+      toast.success("Bravo!");
+    } else {
+      toast.error("Mauvaise reponse!");
     }
+  };
+
+  gameOver = () => {
+    this.setState({
+      quizEnd: true,
+    });
   };
 
   render() {
@@ -122,11 +127,17 @@ class Quiz extends Component {
       );
     });
     const { pseudo } = this.props.userData;
-    return (
-      <div>
+
+    return this.state.quizEnd ? (
+      <QuizOver />
+    ) : (
+      <>
         <h2>Salut {pseudo}</h2>
         <Levels />
-        <ProgressBar />
+        <ProgressBar
+          idquestion={this.state.idquestion}
+          maxQuestion={this.state.maxQuestion}
+        />
         <h2>{this.state.question}</h2>
         {display}
         <button
@@ -134,10 +145,12 @@ class Quiz extends Component {
           disabled={this.state.btnDisabled}
           onClick={this.nextQuestion}
         >
-          Suivant
+          {this.state.idquestion < this.state.maxQuestion - 1
+            ? "Suivant"
+            : "Terminer"}
         </button>
         <ToastContainer />
-      </div>
+      </>
     );
   }
 }
