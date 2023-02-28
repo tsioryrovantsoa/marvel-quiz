@@ -2,12 +2,28 @@ import React, { useEffect, useState } from "react";
 
 const QuizOver = React.forwardRef((props, ref) => {
   const [asked, setasked] = useState([]);
-  const { levelNames, score, maxquestion, quizLevel, percent } = props;
+  const {
+    levelNames,
+    score,
+    maxquestion,
+    quizLevel,
+    percent,
+    loadLevelQuestion,
+  } = props;
   useEffect(() => {
     setasked(ref.current);
   }, [ref]);
 
   const moyenne = maxquestion / 2;
+
+  if (score < moyenne) {
+    // setTimeout(() => {
+    //   loadLevelQuestion(0);
+    // }, 3000);
+    setTimeout(() => {
+      loadLevelQuestion(quizLevel);
+    }, 3000);
+  }
 
   const decision =
     score >= moyenne ? (
@@ -16,12 +32,26 @@ const QuizOver = React.forwardRef((props, ref) => {
           {quizLevel < levelNames.length ? (
             <>
               <p className="successMsg">Bravo, passer au niveau suivante</p>
-              <button className="btnResult success">Niveau suivant</button>
+              <button
+                className="btnResult success"
+                onClick={() => {
+                  loadLevelQuestion(quizLevel);
+                }}
+              >
+                Niveau suivant
+              </button>
             </>
           ) : (
             <>
               <p className="successMsg">Bravo, vous etez expert</p>
-              <button className="btnResult gameOver">Niveau suivant</button>
+              <button
+                className="btnResult gameOver"
+                onClick={() => {
+                  loadLevelQuestion(0);
+                }}
+              >
+                Accueil
+              </button>
             </>
           )}
         </div>
@@ -60,9 +90,10 @@ const QuizOver = React.forwardRef((props, ref) => {
         );
       })
     ) : (
-      <tr >
+      <tr>
         <td colSpan="3">
-          <p style={{ textAlign:'center', color:'red' }}>Pas de reponses!</p>
+          <div className="loader"></div>
+          <p style={{ textAlign: "center", color: "red" }}>Pas de reponses!</p>
         </td>
       </tr>
     );

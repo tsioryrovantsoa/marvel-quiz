@@ -7,22 +7,27 @@ import ProgressBar from "../ProgressBar";
 import QuizOver from "../QuizOver";
 
 class Quiz extends Component {
-  state = {
-    levelNames: ["debutant", "confirme", "expert"],
-    quizLevel: 0,
-    maxQuestion: 10,
-    storedQuestion: [],
-    question: null,
-    options: [],
-    idquestion: 0,
-    btnDisabled: true,
-    userAnswer: null,
-    score: 0,
-    showwelcomemsg: false,
-    quizEnd: false,
-  };
+  constructor(props) {
+    super(props);
 
-  storedDataRef = React.createRef();
+    this.initialstate = {
+      levelNames: ["debutant", "confirme", "expert"],
+      quizLevel: 0,
+      maxQuestion: 10,
+      storedQuestion: [],
+      question: null,
+      options: [],
+      idquestion: 0,
+      btnDisabled: true,
+      userAnswer: null,
+      score: 0,
+      showwelcomemsg: false,
+      quizEnd: false,
+    };
+
+    this.state = this.initialstate;
+    this.storedDataRef = React.createRef();
+  }
 
   loadQuestion = (levels) => {
     const fetchedArrayQuiz = QuizMarvel[0].quizz[levels];
@@ -38,7 +43,7 @@ class Quiz extends Component {
     }
   };
 
-  showWelcomeMsg = (pseudo) => {
+  showToastMsg = (pseudo) => {
     if (!this.state.showwelcomemsg) {
       this.setState({
         showwelcomemsg: true,
@@ -55,14 +60,20 @@ class Quiz extends Component {
 
   //methode rhf mise a jour ny stae
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.storedQuestion !== prevState.storedQuestion) {
+    if (
+      this.state.storedQuestion !== prevState.storedQuestion &&
+      this.state.storedQuestion.length
+    ) {
       this.setState({
         question: this.state.storedQuestion[this.state.idquestion].question,
         options: this.state.storedQuestion[this.state.idquestion].options,
       });
     }
 
-    if (this.state.idquestion !== prevState.idquestion) {
+    if (
+      this.state.idquestion !== prevState.idquestion &&
+      this.state.storedQuestion.length
+    ) {
       this.setState({
         question: this.state.storedQuestion[this.state.idquestion].question,
         options: this.state.storedQuestion[this.state.idquestion].options,
@@ -71,8 +82,8 @@ class Quiz extends Component {
       });
     }
 
-    if (this.props.userData.pseudo) {
-      this.showWelcomeMsg(this.props.userData.pseudo);
+    if (this.props.userData.pseudo !== prevProps.userData.pseudo) {
+      this.showToastMsg(this.props.userData.pseudo);
     }
   }
 
@@ -128,6 +139,11 @@ class Quiz extends Component {
     }
   };
 
+  loadLevelQuestion = (params) => {
+    this.setState({ ...this.initialstate, quizLevel: params });
+    this.loadQuestion(this.state.levelNames[params]);
+  };
+
   render() {
     const display = this.state.options.map((value, index) => {
       return (
@@ -152,6 +168,7 @@ class Quiz extends Component {
         maxquestion={this.state.maxQuestion}
         quizLevel={this.state.quizLevel}
         percent={this.state.percent}
+        loadLevelQuestion={this.loadLevelQuestion}
       />
     ) : (
       <>
