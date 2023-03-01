@@ -10,6 +10,7 @@ const Logout = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // si le bouton est chequer
     if (checked) {
       //Deconnexion
       signOut(auth).then(() => {
@@ -21,8 +22,10 @@ const Logout = () => {
         //erreur
       })
     }
+    //sinon rien
   }, [checked]);
 
+  // quand checked le bouton executer ceci
   const handleChange = (e) => {
     setchecked(e.target.checked);
   };

@@ -1,11 +1,15 @@
 import React from "react";
 
+//parametre en fonction question a present et question maximum
 const ProgressBar = ({ idquestion, maxQuestion }) => {
+  // pourcentage = idquestion * (100/total de question)
   const getporcent = (idquest, total) => {
     return (100 / total) * idquest;
   };
 
+  // question actuel car idquestion debute a  l'ID 0
   const actualquestion = idquestion + 1;
+  // progression est donc egale a
   const progess = getporcent(actualquestion, maxQuestion);
 
   return (

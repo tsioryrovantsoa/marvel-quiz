@@ -9,7 +9,7 @@ import QuizOver from "../QuizOver";
 class Quiz extends Component {
   constructor(props) {
     super(props);
-
+    //state au debut
     this.initialstate = {
       levelNames: ["debutant", "confirme", "expert"],
       quizLevel: 0,
@@ -26,6 +26,7 @@ class Quiz extends Component {
     };
 
     this.state = this.initialstate;
+    //ref pour creer les question
     this.storedDataRef = React.createRef();
   }
 
@@ -82,6 +83,15 @@ class Quiz extends Component {
       });
     }
 
+    if (this.state.quizEnd !== prevState.quizEnd) {
+      // console.log(this.state.score);
+      const reussite = this.getpourcentagereussite(
+        this.state.maxQuestion,
+        this.state.score
+      );
+      this.gameOver(reussite);
+    }
+
     if (this.props.userData.pseudo !== prevProps.userData.pseudo) {
       this.showToastMsg(this.props.userData.pseudo);
     }
@@ -97,7 +107,9 @@ class Quiz extends Component {
   nextQuestion = () => {
     if (this.state.idquestion === this.state.maxQuestion - 1) {
       //Quiz terminer
-      this.gameOver();
+      this.setState({
+        quizEnd: true,
+      });
     } else {
       //
       this.setState((prevState) => ({
@@ -119,22 +131,17 @@ class Quiz extends Component {
 
   getpourcentagereussite = (maxquestion, score) => (score / maxquestion) * 100;
 
-  gameOver = () => {
-    const reussite = this.getpourcentagereussite(
-      this.state.maxQuestion,
-      this.state.score
-    );
-
+  gameOver = (reussite) => {
     if (reussite >= 50) {
       this.setState({
         quizLevel: this.state.quizLevel + 1,
         percent: reussite,
-        quizEnd: true,
+        // quizEnd: true,
       });
     } else {
       this.setState({
         percent: reussite,
-        quizEnd: true,
+        // quizEnd: true,
       });
     }
   };
@@ -173,7 +180,11 @@ class Quiz extends Component {
     ) : (
       <>
         <h2>Salut {pseudo}</h2>
-        <Levels />
+        {/* passer le props les niveaux dispo et le level a present*/}
+        <Levels
+          levelNames={this.state.levelNames}
+          quizLevel={this.state.quizLevel}
+        />
         <ProgressBar
           idquestion={this.state.idquestion}
           maxQuestion={this.state.maxQuestion}

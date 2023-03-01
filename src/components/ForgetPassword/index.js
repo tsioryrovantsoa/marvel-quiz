@@ -10,25 +10,31 @@ const ForgetPassword = () => {
 
   const navigate = useNavigate;
 
+  //formulaire valider
   const handleSubmit = (e) => {
+    //don't recharge la page
     e.preventDefault();
 
+    //appelle a firebase en passant la connexion depuis firebase config, et le email
     sendPasswordResetEmail(auth, email)
       .then(() => {
+        //si email evoyer
         seterror(null);
         setsuccess(
           `Consultez votre e-mail ${email} pour modifier le mot de passe`
         );
         setemail("");
+        //naviger apres 5 secondes
         setTimeout(() => {
           navigate("/login");
         }, 5000);
       })
       .catch((error) => {
+        //sinon mettez l'erreur dans le state
         seterror(error);
       });
   };
-
+  //bouton non activer si email est vide
   const disabled = email === "";
   return (
     <div className="signUpLoginBox">
@@ -36,6 +42,7 @@ const ForgetPassword = () => {
         <div className="formBoxLeftForget"></div>
         <div className="formBoxRight">
           <div className="formContent">
+            {/* afficher message selon la valeur de success ou error*/}
             {success && (
               <span
                 style={{

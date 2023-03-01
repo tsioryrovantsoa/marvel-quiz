@@ -11,12 +11,15 @@ const Login = () => {
   const [msg, setmsg] = useState("");
 
   useEffect(() => {
+    //a chaque modification si mot de passe sup de 5 et email non vide alors activer le bouton
     if (motdepasse.length > 5 && email !== "") {
       setbtn(true);
     } else if (btn) {
+      //sinon desactiver
       setbtn(false);
     }
   }, [motdepasse, email, btn]);
+  // a chaque modification du motdepasse, email, btn
 
   const handleSubmit = (e) => {
     e.preventDefault();
