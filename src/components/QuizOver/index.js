@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { GitrophyCup } from "react-icons/gi";
 
 const QuizOver = React.forwardRef((props, ref) => {
   const [asked, setasked] = useState([]);
@@ -43,7 +44,9 @@ const QuizOver = React.forwardRef((props, ref) => {
             </>
           ) : (
             <>
-              <p className="successMsg">Bravo, vous etez expert</p>
+              <p className="successMsg">
+                <GitrophyCup size='50px' /> Bravo, vous etez expert
+              </p>
               <button
                 className="btnResult gameOver"
                 onClick={() => {
