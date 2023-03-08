@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { GitrophyCup } from "react-icons/gi";
+import { GiTrophyCup } from "react-icons/gi";
+import Loader from "../Loader";
 
 const QuizOver = React.forwardRef((props, ref) => {
   const [asked, setasked] = useState([]);
@@ -45,7 +46,7 @@ const QuizOver = React.forwardRef((props, ref) => {
           ) : (
             <>
               <p className="successMsg">
-                <GitrophyCup size='50px' /> Bravo, vous etez expert
+                <GiTrophyCup size="50px" /> Bravo, vous etez expert
               </p>
               <button
                 className="btnResult gameOver"
@@ -95,8 +96,7 @@ const QuizOver = React.forwardRef((props, ref) => {
     ) : (
       <tr>
         <td colSpan="3">
-          <div className="loader"></div>
-          <p style={{ textAlign: "center", color: "red" }}>Pas de reponses!</p>
+          <Loader loadingmsg="Pas de reponses" styling={{textAlign: "center", color: "red" }}/>
         </td>
       </tr>
     );
