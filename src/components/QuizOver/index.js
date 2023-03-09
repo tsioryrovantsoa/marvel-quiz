@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import { GiTrophyCup } from "react-icons/gi";
 import Loader from "../Loader";
 import Modal from "../Modal";
+import axios from 'axios';
 
 const QuizOver = React.forwardRef((props, ref) => {
   const [asked, setasked] = useState([]);
   const [open, setopen] = useState(false);
+  const [characterInfo, setcharacterInfo] = useState([]);
+  const [loading, setisLoading] = useState(true);
+
   const {
     levelNames,
     score,
@@ -25,10 +29,22 @@ const QuizOver = React.forwardRef((props, ref) => {
 
   const showModal = (id) => {
     setopen(true);
+
+    axios
+    .get(`https://gateway.marvel.com/v1/public/characters/${id}?apikey=${API_PUBLIC_KEY}`)
+    .then((response) => {
+      console.log(response.data);
+      setcharacterInfo(response.data);
+      setisLoading(false);
+    })
+    .catch((error) => {
+      console.log(error)
+    })
   }
 
   const hideModal = () => {
     setopen(false);
+    setisLoading(true);
   }
 
   const moyenne = maxquestion / 2;
@@ -116,6 +132,29 @@ const QuizOver = React.forwardRef((props, ref) => {
       </tr>
     );
 
+  const resultModal = (!loading) ? (
+    <>
+    <div className="modalHeader">
+                <h2>{characterInfo.data.results[0].name}</h2>
+              </div>
+              <div className="modalBody">
+                <h3>Tutre 2</h3>
+              </div>
+              <div className="modalFooter">
+                <button className="modalBtn">Fermer</button>
+            </div>
+        </>
+  ) : (
+    <>
+    <div className="modalHeader">
+                <h2>Reponse de marvel</h2>
+              </div>
+              <div className="modalBody">
+                <Loader />
+              </div>
+        </>
+  );
+
   return (
     <>
       {decision}
@@ -137,15 +176,8 @@ const QuizOver = React.forwardRef((props, ref) => {
       </div>
 
       <Modal showModal={open} hideModal={hideModal}>
-          <div className="modalHeader">
-            <h2>Tutre </h2>
-          </div>
-          <div className="modalBody">
-            <h3>Tutre 2</h3>
-          </div>
-          <div className="modalFooter">
-            <button className="modalBtn">Fermer</button>
-        </div>
+          
+        {resultModal}
       </Modal>
     </>
   );
