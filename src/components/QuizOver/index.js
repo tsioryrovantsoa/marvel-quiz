@@ -75,6 +75,10 @@ const QuizOver = React.forwardRef((props, ref) => {
     setisLoading(true);
   }
 
+  const capitalizeFirstletter = string => {
+    return string.charAt(0).toUpperCase + string.slice(1);
+  }
+
   const moyenne = maxquestion / 2;
 
   if (score < moyenne) {
@@ -166,10 +170,27 @@ const QuizOver = React.forwardRef((props, ref) => {
                 <h2>{characterInfo.data.results[0].name}</h2>
               </div>
               <div className="modalBody">
-                <h3>Tutre 2</h3>
+                <div className="comicImage">
+                    <img src={`${characterInfo.data.results[0].thumbnail.path}.${characterInfo.data.results[0].thumbnail.extension}`} alt={characterInfo.data.results[0].name}/>
+                  <p>{characterInfo.attributionText}</p>
+                </div>
+                <div className="comicDetails">
+                    <h3>Description</h3>
+                    {
+                      (characterInfo.data.results[0].description) ? (<p>{characterInfo.data.results[0].description}</p>) : (<p>Description introuvable</p>)
+                    }
+                    <h3>Plus d'infos</h3>
+                    {
+                      characterInfo.data.results[0].urls && 
+                      characterInfo.data.results[0].urls.map((url,index)=>{
+                        return <a key={index} href={url.url} target="_blank" rel="noopener noreferrer">{capitalizeFirstletter(url.type)}</a>
+                      })
+                    }
+                </div>
+
               </div>
               <div className="modalFooter">
-                <button className="modalBtn">Fermer</button>
+                <button className="modalBtn"  onClick={hideModal}>Fermer</button>
             </div>
         </>
   ) : (
