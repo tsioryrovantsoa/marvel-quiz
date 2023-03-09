@@ -21,25 +21,53 @@ const QuizOver = React.forwardRef((props, ref) => {
 
   const API_PUBLIC_KEY = process.env.REACT_APP_MARVEL_API_KEY;
   // console.log(API_PUBLIC_KEY);
-  const hash = process.env.HASH;
+  // const hash = process.env.HASH;
 
   useEffect(() => {
     setasked(ref.current);
+
+    if(localStorage.getItem('marvelDateStorage')){
+      const date = localStorage.getItem('marvelDateStorage');
+      checkDataAge(date);
+    }
+
   }, [ref]);
+
+  const checkDataAge = date => {
+
+    const today = Date.now();
+    const differencetime = today - date;
+
+    const differencedays = differencetime / (1000 * 3600 * 24);
+
+    if(differencedays >= 15){
+      localStorage.clear();
+      localStorage.setItem('marvelDateStorage',Date.now());
+    }
+  }
 
   const showModal = (id) => {
     setopen(true);
 
-    axios
-    .get(`https://gateway.marvel.com/v1/public/characters/${id}?apikey=${API_PUBLIC_KEY}`)
-    .then((response) => {
-      console.log(response.data);
-      setcharacterInfo(response.data);
+    if(localStorage.getItem(id)){
+      setcharacterInfo(JSON.parse(localStorage.getItem(id)));
       setisLoading(false);
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+    }else{
+      axios
+      .get(`https://gateway.marvel.com/v1/public/characters/${id}?apikey=${API_PUBLIC_KEY}`)
+      .then((response) => {
+        console.log(response.data);
+        setcharacterInfo(response.data);
+        setisLoading(false);
+        localStorage.setItem(id,JSON.stringify(response.data));
+        if(!localStorage.getItem('marvelDateStorage')){
+          localStorage.setItem('marvelDateStorage',Date.now());
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    }
   }
 
   const hideModal = () => {
