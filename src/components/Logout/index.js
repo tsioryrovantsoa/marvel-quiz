@@ -25,7 +25,7 @@ const Logout = () => {
       })
     }
     //sinon rien
-  }, [checked]);
+  }, [checked,navigate]);
 
   // quand checked le bouton executer ceci
   const handleChange = (e) => {
