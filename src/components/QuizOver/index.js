@@ -76,7 +76,7 @@ const QuizOver = React.forwardRef((props, ref) => {
   }
 
   const capitalizeFirstletter = string => {
-    return string.charAt(0).toUpperCase + string.slice(1);
+    return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
   const moyenne = maxquestion / 2;
