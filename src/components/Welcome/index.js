@@ -33,7 +33,7 @@ const Welcome = () => {
     }
 
     return listener();
-  }, [usersession]);
+  }, [usersession,navigate]);
 
   return usersession == null ? (
 <Loader loadingmsg="Authentification" styling={{ textAlign:'center',color:'white' }}/>
